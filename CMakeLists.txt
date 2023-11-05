@@ -2997,6 +2997,8 @@ register_tap_files(tshark-tap-register.c
 	${TSHARK_TAP_SRC}
 )
 
+ADD_CUSTOM_CMAKE_INCLUDE("CMakeListsCustomProgs.txt")
+
 if(BUILD_tshark)
 	set(tshark_LIBS
 		ui

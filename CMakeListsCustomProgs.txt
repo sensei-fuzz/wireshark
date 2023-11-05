@@ -1,0 +1,28 @@
+if(BUILD_dependump)
+	set(dependump_LIBS
+		ui
+		wiretap
+		epan
+	)
+	set(dependump_FILES
+		dependump.c
+	)
+	set_executable_resources(dependump "DepenDump")
+	add_executable(dependump ${dependump_FILES})
+	set_extra_executable_properties(dependump "Executables")
+	target_link_libraries(dependump ${dependump_LIBS})
+	set(CLEAN_C_FILES ${CLEAN_C_FILES} ${dependump_FILES})
+endif()
+
+#
+# Editor modelines  -  https://www.wireshark.org/tools/modelines.html
+#
+# Local variables:
+# c-basic-offset: 8
+# tab-width: 8
+# indent-tabs-mode: t
+# End:
+#
+# vi: set shiftwidth=8 tabstop=8 noexpandtab:
+# :indentSize=8:tabSize=8:noTabs=false:
+#
