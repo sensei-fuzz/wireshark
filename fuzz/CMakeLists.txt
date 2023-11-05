@@ -7,25 +7,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 #
 
-# List of dissectors compiled below, which should be turned off.
-# This is done to avoid single fuzzer (like IP) to call UDP protocols, which can go back to IP, and so on..
-# While doing so might find some bugs, but it's likely to be the problem for too big corpus in oss-fuzzer
-# (see: https://github.com/google/oss-fuzz/issues/1087).
-# + udplite - it's sharing most of code with UDP.
-set(FUZZ_DISABLED_DISSECTORS ip udp udplite ospf bgp dhcp json)
-
-set(FUZZ_DISSECTORS ip)
-set(FUZZ_IP_PROTO_DISSECTORS udp ospf)
-
-set(FUZZ_TCP_PORT_DISSECTORS bgp)
-# list(APPEND FUZZ_TCP_PORT_DISSECTORS bzr)     # disabled, cause of known problem.
-# list(APPEND FUZZ_TCP_PORT_DISSECTORS echo)    # disabled, too simple.
-
-set(FUZZ_UDP_PORT_DISSECTORS dns dhcp)
-# list(FUZZ_UDP_PORT_DISSECTORS bfd)            # disabled, too simple.
-
-set(FUZZ_MEDIA_TYPE_DISSECTORS json)
-
 set(fuzzshark_LIBS
 	ui
 	wiretap
@@ -49,11 +30,6 @@ if(OSS_FUZZ)
 	# libFuzzingEngine.a is not position independent, so cannot use -pie.
 	set(FUZZ_LINK_FLAGS "${FUZZ_LINK_FLAGS} -no-pie")
 endif()
-
-# Convert the list of disabled dissectors from a;b;c -> "a", "b", "c"
-# for use in fuzzshark.c (macro)
-string(REGEX REPLACE "([^;]+)" "\"\\1\"" FUZZ_DISABLED_DISSECTORS_MACRO "${FUZZ_DISABLED_DISSECTORS}")
-string(REPLACE ";" ", " FUZZ_DISABLED_DISSECTORS_MACRO "${FUZZ_DISABLED_DISSECTORS_MACRO}")
 
 # Targets that are build via all-fuzzers:
 # - fuzzshark: a non-specific fuzz target, configurable through env vars (requires BUILD_fuzzshark)
@@ -103,7 +79,6 @@ function(generate_fuzzer dissector_table name)
 	add_executable(${fuzzer_name} EXCLUDE_FROM_ALL ${fuzzshark_FILES})
 	fuzzshark_set_common_options(${fuzzer_name})
 	target_compile_definitions(${fuzzer_name} PRIVATE
-		FUZZ_DISSECTOR_LIST=${FUZZ_DISABLED_DISSECTORS_MACRO}
 		FUZZ_DISSECTOR_TARGET="${name}"
 	)
 	if(NOT dissector_table STREQUAL "")
@@ -126,10 +101,9 @@ foreach(dissector IN LISTS FUZZ_DISSECTORS)
 	generate_fuzzer("" ${dissector})
 endforeach()
 
-add_table_fuzzers("ip.proto")
-add_table_fuzzers("tcp.port")
-add_table_fuzzers("udp.port")
-add_table_fuzzers("media_type")
+foreach(table IN LISTS FUZZ_TABLES)
+	add_table_fuzzers(${table})
+endforeach()
 
 #
 # Editor modelines  -  https://www.wireshark.org/tools/modelines.html

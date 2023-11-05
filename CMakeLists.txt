@@ -716,6 +716,7 @@ else() # ! MSVC
 		# code should not introduce new deprecations in any case.
 		#
 		-Wno-error=deprecated-declarations
+		-Wno-error=unreachable-code
 	)
 
 	if((NOT ENABLE_ASAN) AND (NOT ENABLE_TSAN) AND (NOT ENABLE_UBSAN) AND (NOT DISABLE_FRAME_LARGER_THAN_WARNING))
