@@ -68,6 +68,7 @@ option(ENABLE_ASAN "Enable AddressSanitizer (ASAN) for debugging (degrades perfo
 option(ENABLE_TSAN "Enable ThreadSanitizer (TSan) for debugging" OFF)
 option(ENABLE_UBSAN "Enable UndefinedBehaviorSanitizer (UBSan) for debugging" OFF)
 option(ENABLE_FUZZER "Enable libFuzzer instrumentation for use with fuzzshark" OFF)
+option(INSTRUMENT_DISSECTORS "When libFuzzer is enabled, only instrument the dissector code." OFF)
 option(ENABLE_CHECKHF_CONFLICT "Enable hf conflict check for debugging (start-up may be slower)" OFF)
 
 if(CMAKE_GENERATOR STREQUAL "Ninja")

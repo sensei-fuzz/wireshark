@@ -1017,7 +1017,7 @@ if(ENABLE_UBSAN)
 	set(CMAKE_CXX_FLAGS "-fsanitize=undefined ${CMAKE_CXX_FLAGS}")
 endif()
 
-if(ENABLE_FUZZER)
+if(ENABLE_FUZZER AND NOT INSTRUMENT_DISSECTORS_ONLY)
 	# Available since Clang >= 6
 	# Will enable coverage flags which can be used by the fuzzshark target.
 	cmake_push_check_state()

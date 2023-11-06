@@ -2252,6 +2252,22 @@ set_target_properties(dissectors PROPERTIES
 	COMPILE_DEFINITIONS "WS_BUILD_DLL"
 )
 
+if(ENABLE_FUZZER AND INSTRUMENT_DISSECTORS_ONLY)
+	# Available since Clang >= 6
+	# Will enable coverage flags which can be used by the fuzzshark target.
+	cmake_push_check_state()
+	set(CMAKE_REQUIRED_LIBRARIES "-fsanitize=fuzzer-no-link")
+	check_c_compiler_flag(-fsanitize=fuzzer C__fsanitize_fuzzer_no_link_VALID)
+	check_cxx_compiler_flag(-fsanitize=fuzzer CXX__fsanitize_fuzzer_no_link_VALID)
+	cmake_pop_check_state()
+	if(NOT C__fsanitize_fuzzer_no_link_VALID OR NOT CXX__fsanitize_fuzzer_no_link_VALID)
+		message(FATAL_ERROR "ENABLE_FUZZER was requested, but not supported!")
+	endif()
+	set_target_properties(dissectors PROPERTIES
+		COMPILE_FLAGS "-fsanitize=fuzzer-no-link"
+	)
+endif()
+
 install(FILES ${DISSECTOR_PUBLIC_HEADERS}
 	DESTINATION "${PROJECT_INSTALL_INCLUDEDIR}/epan/dissectors"
 	COMPONENT "Development"
