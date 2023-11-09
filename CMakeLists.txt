@@ -1017,6 +1017,10 @@ if(ENABLE_UBSAN)
 	set(CMAKE_CXX_FLAGS "-fsanitize=undefined ${CMAKE_CXX_FLAGS}")
 endif()
 
+if(ENABLE_FUZZER)
+	add_definitions(-DENABLE_FUZZER)
+endif()
+
 if(ENABLE_FUZZER AND NOT INSTRUMENT_DISSECTORS_ONLY)
 	# Available since Clang >= 6
 	# Will enable coverage flags which can be used by the fuzzshark target.
@@ -1205,6 +1209,12 @@ find_package(CARES "1.13.0" REQUIRED)
 find_package(LEX REQUIRED)
 find_package(Perl)
 find_package(PCRE2 REQUIRED)
+
+if (ENABLE_FUZZER)
+	reset_find_package(Boost)
+	find_package(Boost REQUIRED)
+	include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+endif()
 
 if (NOT WIN32)
 	find_package(Gettext)

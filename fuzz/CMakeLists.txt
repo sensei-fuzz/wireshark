@@ -21,6 +21,8 @@ if(OSS_FUZZ)
 endif()
 set(fuzzshark_FILES
 	fuzzshark.c
+	hooks.cpp
+	tracer.cpp
 )
 set(FUZZ_LINK_FLAGS "${WS_LINK_FLAGS}")
 if(ENABLE_FUZZER)

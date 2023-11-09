@@ -106,6 +106,8 @@
 #include <signal.h>
 #endif
 
+#include "fuzz/hooks.h"
+
 static GSList *epan_plugin_register_all_procotols = NULL;
 static GSList *epan_plugin_register_all_handoffs = NULL;
 
@@ -630,8 +632,8 @@ epan_dissect_fake_protocols(epan_dissect_t *edt, const gboolean fake_protocols)
 		proto_tree_set_fake_protocols(edt->tree, fake_protocols);
 }
 
-void
-epan_dissect_run(epan_dissect_t *edt, int file_type_subtype,
+static void
+WRAPPED(epan_dissect_run)(epan_dissect_t *edt, int file_type_subtype,
 	wtap_rec *rec, tvbuff_t *tvb, frame_data *fd,
 	column_info *cinfo)
 {
@@ -645,6 +647,16 @@ epan_dissect_run(epan_dissect_t *edt, int file_type_subtype,
 	wmem_leave_packet_scope();
 	wtap_block_unref(rec->block);
 	rec->block = NULL;
+}
+
+void
+WRAPPER(epan_dissect_run)(epan_dissect_t *edt, int file_type_subtype,
+	wtap_rec *rec, tvbuff_t *tvb, frame_data *fd,
+	column_info *cinfo)
+{
+	HOOK(prologue, epan_dissect_run)(edt, file_type_subtype, rec, tvb, fd, cinfo);
+	wrapped_epan_dissect_run(edt, file_type_subtype, rec, tvb, fd, cinfo);
+	HOOK(epilogue, epan_dissect_run)(edt, file_type_subtype, rec, tvb, fd, cinfo);
 }
 
 void
