@@ -13,7 +13,7 @@ set(fuzzshark_LIBS
 	epan
 	wsutil
 )
-if(OSS_FUZZ)
+if(OSS_FUZZ OR CUSTOM_FUZZ)
 	if("$ENV{LIB_FUZZING_ENGINE}" STREQUAL "")
 		message(FATAL_ERROR "LIB_FUZZING_ENGINE is not set!")
 	endif()
@@ -25,10 +25,10 @@ set(fuzzshark_FILES
 	tracer.cpp
 )
 set(FUZZ_LINK_FLAGS "${WS_LINK_FLAGS}")
-if(ENABLE_FUZZER)
+if(ENABLE_FUZZER AND NOT CUSTOM_FUZZ)
 	set(FUZZ_LINK_FLAGS "${FUZZ_LINK_FLAGS} -fsanitize=fuzzer")
 endif()
-if(OSS_FUZZ)
+if(OSS_FUZZ OR CUSTOM_FUZZ)
 	# libFuzzingEngine.a is not position independent, so cannot use -pie.
 	set(FUZZ_LINK_FLAGS "${FUZZ_LINK_FLAGS} -no-pie")
 endif()
