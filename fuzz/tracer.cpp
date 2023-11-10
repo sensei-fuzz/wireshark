@@ -3,20 +3,6 @@
 #include <iostream>
 #include <iomanip>
 
-template <typename T>
-std::size_t count_integers(const boost::icl::interval_set<T>& interval_set) {
-    std::size_t count = 0;
-    for (auto& interval : interval_set) {
-        // Since we are dealing with discrete integers, the size of an interval is
-        // upper - lower + 1 (because both ends are included in a closed interval).
-        // For open intervals, you would adjust the calculation accordingly.
-        if (!boost::icl::is_empty(interval)) {
-            count += boost::icl::length(interval);
-        }
-    }
-    return count;
-}
-
 namespace fuzzer {
 
 Tracer::Tracer() {}
