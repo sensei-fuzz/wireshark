@@ -349,7 +349,7 @@ fuzz_init(int argc _U_, char **argv)
 #endif
 
 	fuzz_epan = fuzzshark_epan_new();
-	fuzz_edt = epan_dissect_new(fuzz_epan, TRUE, FALSE);
+	fuzz_edt = epan_dissect_new(fuzz_epan, TRUE, TRUE);
 
 	return 0;
 clean_exit:
