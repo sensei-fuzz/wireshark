@@ -52,6 +52,26 @@ static column_info fuzz_cinfo;
 static epan_t *fuzz_epan;
 static epan_dissect_t *fuzz_edt;
 
+void print_tree(proto_tree* tree, int level)
+{
+    if(tree == NULL)
+        return;
+
+    for(int i=0; i<level; ++i)
+        fprintf(stderr, "    ");
+
+    gchar field_str[ITEM_LABEL_LENGTH + 1] = {0};
+    if(tree->finfo->rep == NULL)
+        proto_item_fill_label(tree->finfo, field_str);
+    else
+        strcpy(field_str, tree->finfo->rep->representation);
+
+    fprintf(stderr, "%s\n", field_str);
+
+    print_tree(tree->first_child, level+1);
+    print_tree(tree->next, level);
+}
+
 /*
  * Report an error in command-line arguments.
  */
