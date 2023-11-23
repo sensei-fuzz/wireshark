@@ -66,6 +66,9 @@ Tracer::RecordField(proto_node *node, size_t depth, DepthMap *map) {
             auto &record = (*(level.try_emplace(id).first)).second;
             record.count += 1;
             record.max_length = std::max(record.max_length, len);
+            if (finfo->length == 0) {
+                return false;
+            }
             auto finterval = FieldInterval(
                 finfo->start, finfo->start + finfo->length - 1);
             record.bytes += finterval;
