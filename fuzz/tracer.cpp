@@ -50,7 +50,8 @@ Tracer::RecordField(proto_node *node, size_t depth, DepthMap *map) {
     if (finfo) {
         auto hfinfo = finfo->hfinfo;
         if (strcmp(hfinfo->abbrev, "data") != 0 && /* data is unparsed bytes */
-                strstr(hfinfo->abbrev, "_ws.") != hfinfo->abbrev) {
+                (strcmp(hfinfo->abbrev, "_ws.expert") == 0 ||
+                strstr(hfinfo->abbrev, "_ws.") != hfinfo->abbrev)) {
             FieldId id = hfinfo->id;
             size_t len = finfo->length;
 

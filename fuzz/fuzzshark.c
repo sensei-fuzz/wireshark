@@ -383,6 +383,7 @@ LLVMFuzzerTestOneInput(const guint8 *buf, size_t real_len)
 	frame_data_init(&fdlocal, ++framenum, &rec, /* offset */ 0, /* cum_bytes */ 0);
 	/* frame_data_set_before_dissect() not needed */
 	epan_dissect_run(edt, WTAP_FILE_TYPE_SUBTYPE_UNKNOWN, &rec, tvb_new_real_data(buf, len, len), &fdlocal, NULL /* &fuzz_cinfo */);
+        // print_tree(edt->tree->first_child, 0);
 	frame_data_destroy(&fdlocal);
 
 	epan_dissect_reset(edt);
